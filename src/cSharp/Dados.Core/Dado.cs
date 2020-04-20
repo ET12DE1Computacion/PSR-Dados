@@ -2,7 +2,7 @@
 
 namespace Dados.Core
 {
-    public class Dado
+    public class Dado: ICloneable
     {
         public byte CaraSuperior { get; private set; }
         public byte CantidadCaras { get; private set; }
@@ -11,7 +11,8 @@ namespace Dados.Core
         {
             CantidadCaras = cantidadCaras;
             Azar = new Random(DateTime.Now.Millisecond);
-        }
+            Tirar();
+        }        
         public bool Salio(byte numero) => CaraSuperior == numero;
         public void Tirar()
             => CaraSuperior = Convert.ToByte(Azar.Next(CantidadCaras) + 1);
@@ -28,5 +29,7 @@ namespace Dados.Core
             }
             return contador;
         }
+
+        public object Clone() => new Dado(CantidadCaras);
     }
 }
