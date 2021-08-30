@@ -39,5 +39,20 @@ namespace Dados.Core
 
             return tareas.Sum(t => t.Result);
         }
+        public async Task<int> SimularConHilosAsync(Dado dado, byte numero, int cantidadSimulaciones, int cantidadHilos)
+        {
+            Task<int>[] tareas = new Task<int>[cantidadHilos];
+            int simulacionesPorHilo = cantidadSimulaciones / cantidadHilos;
+
+            //Instanciamos cada hilo, clonando un dado por cada hilo                     
+            for (int i = 0; i < cantidadHilos; i++)
+            {
+                Dado clon = (Dado)dado.Clone();
+                tareas[i] = Task<int>.Run(() => clon.TirarNVeces(numero, simulacionesPorHilo));
+            }
+            await Task<int>.WhenAll(tareas);
+             //Esperamos que todos terminen su ejecución
+            return tareas.Sum(t => t.Result);
+        }
     }
 }
